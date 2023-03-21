@@ -18,7 +18,7 @@ class Uno:
 
         #향후 수정예정 플레이어 2명 기준 설정
         self.CPU = 1
-        if first_player == "oppenet":
+        if first_player == "opponent":
             self.CPU = 0
 
         # Create the players
