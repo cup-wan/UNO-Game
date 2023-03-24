@@ -4,17 +4,17 @@ import time
 
 class Uno:
     def __init__(self, num_players, first_player):
-        self.deck = []
+        self.draw_pile = []
         self.discard_pile = []
         self.players = []
         self.current_player = 0
         self.direction = 1
 
-        # Create the deck
-        self.create_deck()
+        # Create the draw pile
+        self.create_draw_pile()
 
-        # Shuffle the deck
-        random.shuffle(self.deck)
+        # Shuffle the draw pile
+        random.shuffle(self.draw_pile)
 
         #향후 수정예정 플레이어 2명 기준 설정
         self.CPU = 1
@@ -28,32 +28,32 @@ class Uno:
         # Deal the cards
         for i in range(7):
             for player in self.players:
-                card = self.deck.pop()
+                card = self.draw_pile.pop()
                 player.append(card)
 
         # Set the top card of the discard pile
-        self.discard_pile.append(self.deck.pop())
+        self.discard_pile.append(self.draw_pile.pop())
 
-    def create_deck(self):
+    def create_draw_pile(self):
         # Create the number cards
         for color in ["red", "green", "blue", "yellow"]:
             for value in range(0, 10):
-                self.deck.append((color, value))
-                self.deck.append((color, value))
+                self.draw_pile.append((color, value))
+                self.draw_pile.append((color, value))
 
         # Create the action cards
         for color in ["red", "green", "blue", "yellow"]:
-            self.deck.append((color, "skip"))
-            self.deck.append((color, "reverse"))
-            self.deck.append((color, "draw2"))
-            self.deck.append((color, "wild"))
+            self.draw_pile.append((color, "skip"))
+            self.draw_pile.append((color, "reverse"))
+            self.draw_pile.append((color, "draw2"))
+            self.draw_pile.append((color, "wild"))
 
         # Create the wild cards
         for i in range(4):
-            self.deck.append(("wild", "wild"))
-            self.deck.append(("wild", "draw4"))
-            self.deck.append(("wild", "draw1"))
-            self.deck.append(("wild", "one_more"))
+            self.draw_pile.append(("wild", "wild"))
+            self.draw_pile.append(("wild", "draw4"))
+            self.draw_pile.append(("wild", "draw1"))
+            self.draw_pile.append(("wild", "one_more"))
 
     def play(self):
         while True:
@@ -81,7 +81,7 @@ class Uno:
 
             # Handle drawing a card
             if card == "draw":
-                self.players[self.current_player].append(self.deck.pop())
+                self.players[self.current_player].append(self.draw_pile.pop())
 
                 # Check if the player can play the card they just drew
                 if self.can_play(self.players[self.current_player]):
@@ -117,7 +117,7 @@ class Uno:
                         elif player_add >= len(self.players):
                             player_add = 0
                         for i in range(2):
-                            self.players[player_add].append(self.deck.pop())
+                            self.players[player_add].append(self.draw_pile.pop())
 
                     # Handle wild cards
                     elif card[1] == "wild":
@@ -141,7 +141,7 @@ class Uno:
                         elif player_add >= len(self.players):
                             player_add = 0
                         for i in range(4):
-                            self.players[player_add].append(self.deck.pop())
+                            self.players[player_add].append(self.draw_pile.pop())
                     elif card[1] == "draw1":
                         if self.CPU == self.current_player:
                             color = self.cpu_player_skill()
@@ -153,7 +153,7 @@ class Uno:
                             player_add = len(self.players) - 1
                         elif player_add >= len(self.players):
                             player_add = 0
-                        self.players[player_add].append(self.deck.pop())
+                        self.players[player_add].append(self.draw_pile.pop())
 
                     elif card[1] == "one_more":
                         if self.CPU == self.current_player:
@@ -178,11 +178,11 @@ class Uno:
                             uno_input = input()
                             if uno_input == "uno":
                                 if self.CPU == self.current_player:
-                                    self.players[self.current_player].append(self.deck.pop())
+                                    self.players[self.current_player].append(self.draw_pile.pop())
                                 break
                             elif uno_begin - uno_end >= 10:
                                 if self.CPU != self.current_player:
-                                    self.players[self.current_player].append(self.deck.pop())
+                                    self.players[self.current_player].append(self.draw_pile.pop())
                                 break
 
                     # Move on to the next player
