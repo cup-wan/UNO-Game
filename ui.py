@@ -4,25 +4,46 @@ from Game import Uno
 class Deck_card(pygame.sprite.Sprite):
     def __init__(self, color, value, index):
         super().__init__()
+
         # set wild cards' color as black
         if color == "wild":
             color = 'black'
 
+        self.image = pygame.image.load('graphics/' + color + '.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (59, 91)) # /12
+        self.rect = self.image.get_rect(topleft = (index * 75, 450))
+
+        font = pygame.font.Font(None, 40)
+
         # action & wild cards
-        if value in {"skip", "reverse", "draw2", "wild", "draw4", "draw1", "one_more"}:
-            # TODO: place logo on card
-            pass
+        symbols = {
+            "skip": "S",
+            "reverse": "R",
+            "draw2": "+2",
+            "wild": "W",
+            "draw4": "+4",
+            "draw1": "+1",
+            "one_more": "1+"
+        }
+        if value in symbols:
+            symbol = symbols[value]
+            text_surf = font.render(symbol, True, 'black')
+
         # number cards
         else:
-            # TODO: place number on card
-            pass
+            text_surf = font.render(str(value), True, 'black')
 
-        x_pos = index * 80
-        y_pos = 450
+        # TODO: rect
+        # get the center position of the card image
+        center_x = self.image.get_width() // 2
+        center_y = self.image.get_height() // 2
+        # get the center position of the text surface
+        text_x = center_x - text_surf.get_width() // 2
+        text_y = center_y - text_surf.get_height() // 2
+        # blit the text surface onto the card image
+        #text_rect = text_surf.get_rect(center=self.rect.center)
+        self.image.blit(text_surf, (text_x, text_y))
 
-        self.image = pygame.image.load('graphics/'+color+'.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (59, 91)) # /12
-        self.rect = self.image.get_rect(topleft = (x_pos, y_pos))
 
     def clicked(self):
         if self.rect.collidepoint(mouse_pos):
@@ -55,16 +76,16 @@ clock = pygame.time.Clock()
 card_group = pygame.sprite.Group()
 
 # Load draw pile
-card_surf = pygame.image.load('graphics/black.png').convert_alpha()
-card_surf = pygame.transform.scale(card_surf, (59, 91)) # /12
-card_rect = card_surf.get_rect(midbottom = (200,300))
+draw_surf = pygame.image.load('graphics/black.png').convert_alpha()
+draw_surf = pygame.transform.scale(draw_surf, (59, 91)) # /12
+draw_rect = draw_surf.get_rect(midbottom = (200,300))
 
 # Timer
 font = pygame.font.Font(None, 50)
 
 
 # Create the highlight surface
-highlight_surf = pygame.Surface(card_surf.get_size(), pygame.SRCALPHA)
+highlight_surf = pygame.Surface(draw_surf.get_size(), pygame.SRCALPHA)
 highlight_surf.fill((255, 255, 0, 50))
 
 # Game state: start_menu, playing, game_over, pause
@@ -76,17 +97,16 @@ game_over_text = font.render("Press anykey!", True, 'White')
 # set start menu text
 start_menu_text = font.render("Press any key to start", True, 'White')
 
+
 # single game
 game = Uno(1, 0)
 deck = game.players[game.current_player]
 
 # Create instances of the Deck_card class for each card in the deck
-#for i, card in enumerate(game.players[0]): # Player 0's deck
-for i, card in enumerate([('red', 7), ('red', 4), ('green', 4), ('red', 6), ('red', 6), ('red', 4), ('yellow', 6)]):
-    color, number = card
-    card_sprite = Deck_card(color, int(number), i)
+for i, card in enumerate(deck):
+    color, value = card
+    card_sprite = Deck_card(color, value, i)
     card_group.add(card_sprite)
-
 
 
 # Game loop
@@ -112,16 +132,17 @@ while running:
         # Get the mouse position
         mouse_pos = pygame.mouse.get_pos()
 
+        # my deck
         card_group.draw(screen)
         card_group.update()
 
 
 
         # Check if the mouse is hovering over the card
-        if card_rect.collidepoint(mouse_pos):
+        if draw_rect.collidepoint(mouse_pos):
             # Draw the card surface and the highlight surface
-            screen.blit(card_surf,card_rect)
-            screen.blit(highlight_surf, card_rect)
+            screen.blit(draw_surf,draw_rect)
+            screen.blit(highlight_surf, draw_rect)
 
             # Check if the left mouse button is clicked
             if pygame.mouse.get_pressed()[0]:
@@ -130,7 +151,7 @@ while running:
 
         else:
             # Draw only the card surface
-            screen.blit(card_surf,card_rect)
+            screen.blit(draw_surf,draw_rect)
 
 
 
