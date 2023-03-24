@@ -241,3 +241,4 @@ if __name__ == "__main__":
     first_player = input("Who is first? you or opponent")
     Games = Uno(int(player_num), first_player)
     Games.play()
+    print(Games.deck)
