@@ -10,7 +10,6 @@ class Card(pygame.sprite.Sprite):
             color = 'black'
 
         self.image = pygame.image.load('graphics/' + color + '.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (59, 91)) # /12
         self.rect = self.image.get_rect()
 
         font = pygame.font.Font(None, 40)
@@ -159,7 +158,7 @@ while running:
 
     # Game playing screen
     if state == 'playing':
-        screen.fill('white')
+        screen.fill('ivory')
         display_timer()
 
         # Get the mouse position
