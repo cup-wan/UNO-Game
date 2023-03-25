@@ -59,7 +59,7 @@ class Deck_card(Card):
 
 class Draw_pile(Card):
     def __init__(self):
-        super().__init__('black', '')
+        super().__init__('back', '')
         self.rect.midbottom = (200, 300)
 
     def clicked(self):
