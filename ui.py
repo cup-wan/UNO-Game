@@ -111,10 +111,18 @@ def uno_button():
             print("Left Mouse key was clicked")
 
 def current_color():
+    color_dict = {
+    'green': '#00AC67',
+    'red': '#F35959',
+    'blue': '#006CB4',
+    'yellow': '#EED324'
+}
+    # get color from Uno class
+    color, _ = game.discard_pile[-1]
+
     # Create a color surface
     color_surf = pygame.Surface((50, 50))
-    # TODO: get color from Uno class
-    color_surf.fill('white')
+    color_surf.fill(color_dict[color])
     color_rect = color_surf.get_rect(midbottom = (450, 240))
 
     # Blit the color surface onto the game screen
