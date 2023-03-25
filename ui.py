@@ -31,7 +31,6 @@ class Card(pygame.sprite.Sprite):
         else:
             text_surf = font.render(str(value), True, 'black')
 
-        # TODO: Use rect
         # get the center position of the card image
         center_x = self.image.get_width() // 2
         center_y = self.image.get_height() // 2
@@ -78,19 +77,48 @@ class Discard_pile(Card):
     def update(self):
         pass
 
-
+# TODO
 class Player_list(pygame.sprite.Sprite):
     def __init__(self, color, value, index):
         super().__init__()
-        550
+        topleft = (550, 0)
 
-# TODO: get time from Uno class
-def display_timer():
-    timer_surf = font.render('timer', False, 'Black')
-    timer_rect = timer_surf.get_rect(topright = (800, 0))
+def timer():
+    # TODO: get time from Uno class
+    timer_surf = font.render('timer', False, 'black')
+    timer_rect = timer_surf.get_rect(topleft = (0, 0))
     pygame.draw.rect(screen, 'Pink', timer_rect)
     screen.blit(timer_surf, timer_rect)
     
+def uno_button():
+    # set up button properties
+    font = pygame.font.Font(None, 40)
+    text = font.render("Uno", True, 'black')
+
+    # create button surface
+    button_surf = pygame.Surface((100, 50))
+    button_surf.fill('white')
+    button_rect = button_surf.get_rect(midbottom = (450, 300))
+
+    # blit text onto button surface
+    text_rect = text.get_rect(center=button_surf.get_rect().center)
+    button_surf.blit(text, text_rect)
+
+    screen.blit(button_surf, button_rect)
+
+    if button_rect.collidepoint(pygame.mouse.get_pos()):
+        if pygame.mouse.get_pressed()[0]:
+            print("Left Mouse key was clicked")
+
+def current_color():
+    # Create a color surface
+    color_surf = pygame.Surface((50, 50))
+    # TODO: get color from Uno class
+    color_surf.fill('white')
+    color_rect = color_surf.get_rect(midbottom = (450, 240))
+
+    # Blit the color surface onto the game screen
+    screen.blit(color_surf, color_rect)
 
 pygame.init()
 
@@ -138,10 +166,6 @@ start_menu_text = font.render("Press any key to start", True, 'White')
 
 
 
-
-
-
-
 # Game loop
 running = True
 while running:
@@ -158,11 +182,16 @@ while running:
 
     # Game playing screen
     if state == 'playing':
-        screen.fill('ivory')
-        display_timer()
+        screen.fill('lavender')
+
+
 
         # Get the mouse position
         mouse_pos = pygame.mouse.get_pos()
+
+        timer()
+        uno_button()
+        current_color()
 
         # my deck
         deck_cards.draw(screen)
