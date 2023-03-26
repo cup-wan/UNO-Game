@@ -41,10 +41,9 @@ class Card(pygame.sprite.Sprite):
         #text_rect = text_surf.get_rect(center=self.rect.center)
         self.image.blit(text_surf, (text_x, text_y))
 
-class Deck_card(Card):
+class HandCard(Card):
     def __init__(self, color, value, index):
         super().__init__(color, value)
-
         self.rect.topleft = (index * 75 + 20, 450)
 
     def clicked(self):
@@ -55,7 +54,7 @@ class Deck_card(Card):
     def update(self):
         self.clicked()
 
-class Draw_pile(Card):
+class DrawPile(Card):
     def __init__(self):
         super().__init__('back', '')
         self.rect.midbottom = (200, 300)
@@ -68,7 +67,7 @@ class Draw_pile(Card):
     def update(self):
         self.clicked()
 
-class Discard_pile(Card):
+class DiscardPile(Card):
     def __init__(self, pile):
         color, value = pile[-1]
         super().__init__(color, value)
@@ -77,11 +76,31 @@ class Discard_pile(Card):
     def update(self):
         pass
 
-# TODO
-class Player_list(pygame.sprite.Sprite):
-    def __init__(self, color, value, index):
+class PlayerHand(pygame.sprite.Sprite):
+    def __init__(self, player_number, number_of_cards):
         super().__init__()
-        topleft = (550, 0)
+        self.image = pygame.Surface((250, 150))
+        self.image.fill('white')
+        self.rect = self.image.get_rect(topright=(800, player_number * 100))
+        self.card_group = pygame.sprite.Group()
+        
+        # add card sprites to the sprite group
+        card_width = 35
+        card_height = 55
+        card_spacing = 20
+        for i in range(number_of_cards):
+            card = Card('back', '')
+            card.image = pygame.transform.scale(card.image, (card_width, card_height))
+            card.rect.x = 10 + i * card_spacing
+            card.rect.y = 80
+            self.card_group.add(card)
+        
+        # update the player hand sprite image with the card sprites
+        self.card_group.draw(self.image)
+
+    def update(self):
+        pass
+
 
 def timer():
     # TODO: get time from Uno class
@@ -117,8 +136,9 @@ def current_color():
     'blue': '#006CB4',
     'yellow': '#EED324'
 }
-    # get color from Uno class
+    # TODO: get color from Uno class, not from pile
     color, _ = game.discard_pile[-1]
+    if color == 'wild': color = 'black'
 
     # Create a color surface
     color_surf = pygame.Surface((50, 50))
@@ -138,21 +158,29 @@ pygame.display.set_caption('UNO Game')
 clock = pygame.time.Clock()
 
 # Single game
-game = Uno(1, 0)
-deck = game.players[game.current_player]
+game = Uno(2, 0)
+my_hand = game.players[0]
+others_hand = game.players[1:]
 
 # Sprites
-deck_cards = pygame.sprite.Group()
-for i, card in enumerate(deck):
+hand_card = pygame.sprite.Group()
+for i, card in enumerate(my_hand):
     color, value = card
-    card_sprite = Deck_card(color, value, i)
-    deck_cards.add(card_sprite)
+    card_sprite = HandCard(color, value, i)
+    hand_card.add(card_sprite)
 
 draw_pile = pygame.sprite.GroupSingle()
-draw_pile.add(Draw_pile())
+draw_pile.add(DrawPile())
 
 discard_pile = pygame.sprite.GroupSingle()
-discard_pile.add(Discard_pile(game.discard_pile))
+discard_pile.add(DiscardPile(game.discard_pile))
+
+player_list = pygame.sprite.Group()
+for i, player in enumerate(others_hand):
+    player_number = i
+    number_of_cards = len(player)
+    hand_sprite = PlayerHand(player_number, number_of_cards)
+    player_list.add(hand_sprite)
 
 
 # font
@@ -202,8 +230,8 @@ while running:
         current_color()
 
         # my deck
-        deck_cards.draw(screen)
-        deck_cards.update()
+        hand_card.draw(screen)
+        hand_card.update()
 
         # draw pile
         draw_pile.draw(screen)
@@ -214,7 +242,8 @@ while running:
         discard_pile.update()
 
         # player list
-
+        player_list.draw(screen)
+        player_list.update()
 
 
 
