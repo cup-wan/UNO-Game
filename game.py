@@ -126,7 +126,7 @@ class Card:
         self.card_picture = card_picture
 
 # 덱 생성 덱 섞는것과  카드 드로우 하는 함수 생성
-class Deck:
+class DrawPile:
     def __init__(self):
         self.cards = []
         self.build()
@@ -178,8 +178,8 @@ class Game:
             players.append(Player("CPU"))
         self.Player_turn = Player_turn
         self.players = players
-        self.deck = Deck()
-        self.deck.shuffle()
+        self.draw_pile = DrawPile()
+        self.draw_pile.shuffle()
         self.play_pile = []
         self.direction = 1
         self.current_player = 0
@@ -190,7 +190,7 @@ class Game:
     def play(self):
         print("Game started!")
         self.deal_cards()
-        self.play_pile.append(self.deck.draw_card())
+        self.play_pile.append(self.draw_pile.draw_card())
         self.print_status()
         while not self.winner:
             self.next_turn()
@@ -199,7 +199,7 @@ class Game:
     def deal_cards(self):
         for i in range(7):
             for player in self.players:
-                player.draw(self.deck, 1)
+                player.draw(self.draw_pile, 1)
 
     def next_turn(self):
             player = self.players[self.current_player]
@@ -229,7 +229,7 @@ class Game:
                     time.sleep(5)
 
                 if card_submit == "Draw":
-                    player.draw(self.deck, 1)
+                    player.draw(self.draw_pile, 1)
                 elif card_submit == None:
                     pass
                 else:
@@ -242,10 +242,10 @@ class Game:
                     uno_button = self.input_with_timeout("", 10)
                     if uno_button == "Uno":
                         if self.Player_turn != self.current_player:
-                            player.draw(self.deck, 1)
+                            player.draw(self.draw_pile, 1)
                     else:
                         if self.Player_turn == self.current_player:
-                            player.draw(self.deck, 1)
+                            player.draw(self.draw_pile, 1)
 
                 if not player.hand:
                     self.winner = player
@@ -259,9 +259,9 @@ class Game:
                             print("제출 가능한 카드가 없습니다.")
                             choice = -1
                         if choice == "Draw":
-                            player.draw(self.deck, 1)
+                            player.draw(self.draw_pile, 1)
                 else:
-                    player.draw(self.deck, 1)
+                    player.draw(self.draw_pile, 1)
             self.current_player = (self.current_player + self.direction) % len(self.players)
 
 
@@ -307,7 +307,7 @@ class Game:
             else:
                 select_color = self.cpu_player_skill()
                 self.play_pile[-1] = Card(select_color, card.value)
-            player.draw(self.deck, 1)
+            player.draw(self.draw_pile, 1)
         elif card.value == "One_more":
             if self.Player_turn == self.current_player:
                 self.timer = time.time()
@@ -323,7 +323,7 @@ class Game:
         elif card.value == "Skip":
             self.current_player = (self.current_player + self.direction) % len(self.players)
         elif card.value == "Draw2":
-            player.draw(self.deck, 2)
+            player.draw(self.draw_pile, 2)
         elif card.value == "Reverse":
             self.direction = self.direction*(-1)
 
