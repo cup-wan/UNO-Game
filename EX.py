@@ -4,8 +4,9 @@ from pygame.locals import *
 import loadcard
 import popup
 
-
-turn=0 #현재 턴
+draw_num=0;
+turn = 0 #현재 턴
+turn_clockwise = True #게임 진행방향 true면 turn +1 증가(시계방향)/false면 -1
 
 def pick_color(self):                                                    #색 고르는 스킬 팝업 생성
         color_popup = popup.Popup('pickcolor', (400, 300))
@@ -33,7 +34,7 @@ def pick_color(self):                                                    #색 �
                             temp_name = sprite.get_name()                #클릭된 것의 이름을 임시로 저장
                             temp = loadcard.Card(temp_name, (430, 300))  #카드를 정해진 좌표로 불러옴(버린 카드 모아둔 곳 좌표)
                             self.waste_card.append(temp_name)            
-                            self.waste_group.add(temp)                   #temp를 버리는 sprite 그룹에 추가
+                            self.waste_group.add(temp)                   #temp를 버리는 그룹에 추가
                             self.printwindow()
                             loop = False
 
@@ -100,3 +101,39 @@ def result(self):
                         return
         return 0
     
+def skip(self, turn):
+        if turn_clockwise == True:
+            #self.player[turn+1] 사람의 손 패의 좌표를 얻고
+            #그 좌표에 금지 표시 이미지 1초간 생성 후 삭제
+            return
+        else:
+            #self.player[turn-1] 사람의 손 패의 좌표를 얻고
+            #그 좌표에 금지 표시 이미지 1초간 생성 후 삭제
+            return
+    
+def draw(self, draw_num):
+        if turn_clockwise == True:
+            #self.player[turn+1] 사람의 손 패의 좌표를 얻고
+            #그 좌표에 +draw_num 표시 이미지 1초간 생성 후 삭제
+            return
+        else:
+            #self.player[turn-1] 사람의 손 패의 좌표를 얻고
+            #그 좌표에 +draw_num 표시 이미지 1초간 생성 후 삭제
+            return
+        return
+        
+def reverse(self, turn_clockwise):
+        if turn_clockwise == True:
+            img_clockwise=pygame.image.load('img_clockwise')
+            img_clockwise=pygame.transform.scale(img_clockwise, (200, 200))
+            self.screen.blit(img_clockwise, (200,200))#좌표, 시계방향 이미지 1초간 출력 ->
+            sleep(1)
+            img_clockwise.remove
+            return
+        else:
+            img_counterclockwise=pygame.image.load('img_counterclockwise')
+            img_counterclockwise=pygame.transform.scale(img_counterclockwise, (200, 200))
+            self.screen.blit(img_counterclockwise, (200,200))#좌표, 반시계방향 이미지 1초간 출력
+            sleep(1)
+            img_counterclockwise.remove
+            return
