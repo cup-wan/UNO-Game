@@ -13,3 +13,4 @@ class Popup(pygame.sprite.Sprite):
         return self.name
     def get_rect(self):
         return self.rect
+    
