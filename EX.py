@@ -17,6 +17,7 @@ def pick_color(self):                                                    #색 �
         blue = popup.Popup('BLUE', (494, 320))
         colors = [red, yellow, green, blue]
         color_group = pygame.sprite.RenderPlain(*colors)
+        pick_color_selected=1
 
         loop = True
         while loop:
@@ -40,36 +41,36 @@ def pick_color(self):                                                    #색 �
 
                 if event.type == KEYDOWN:                                #키보드  
                     if event.key == K_LEFT:                                   
-                        if selected <=1:
-                            selected = 1
+                        if pick_color_selected <=1:
+                            pick_color_selected
                         else:
-                            selected = selected-1
+                            pick_color_selected = pick_color_selected-1
                     elif event.key == K_RIGHT:
-                        if selected >=4:
-                            selected = 4
+                        if pick_color_selected >=4:
+                            pick_color_selected = 4
                         else:
-                            selected = selected+1
+                            pick_color_selected = pick_color_selected+1
                     if event.key == K_RETURN:
-                        if selected <= 1:
+                        if pick_color_selected <= 1:
                             temp = loadcard.Card('RED', (430, 300))
                             self.waste_group.add(temp)
                             self.printwindow()
                             loop = False
-                        if selected == 2:
+                        if pick_color_selected == 2:
                             temp = loadcard.Card('YELLOW', (430, 300))
                             self.waste_group.add(temp)
                             self.printwindow()
                             loop = False
-                        if selected == 3:
+                        if pick_color_selected == 3:
                             temp = loadcard.Card('GREEN', (430, 300))
                             self.waste_group.add(temp)
                             self.printwindow()
                             loop = False
-                        if selected >= 4:
+                        if pick_color_selected >= 4:
                             temp = loadcard.Card('BLUE', (430, 300))
                             self.waste_group.add(temp)
                             self.printwindow()
-                            loop = False 
+                            loop = False                                                  
         return 0
     
 def result(self):
